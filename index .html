@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>মুসলিমস ডে — নামাজ, সেহরি-ইফতার ও কিবলা কম্পাস</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0b1011;
+      --surface: #141a1b;
+      --border: rgba(255, 255, 255, 0.09);
+      --text: #f1f5f4;
+      --muted: #93a3a1;
+      --emerald: #00a86b;
+      --emerald-soft: rgba(0, 168, 107, 0.14);
+      --teal-top: #0d4d5e;
+      --teal-mid: #136574;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans Bengali', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    .tabular { font-variant-numeric: tabular-nums; }
+    .app-shell { max-width: 1100px; margin: 0 auto; padding: 0 0 40px; }
+    @media (min-width: 960px) {
+      .app-shell { padding: 24px 24px 48px; }
+      .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+    }
+    .stack { display: flex; flex-direction: column; gap: 12px; }
+    .hero {
+      background: linear-gradient(180deg, var(--teal-top) 0%, var(--teal-mid) 55%, #0e2428 100%);
+      padding: 18px 18px 22px;
+    }
+    @media (min-width: 960px) { .hero { border-radius: 24px; border: 1px solid var(--border); } }
+    .top-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+    .loc-btn {
+      background: rgba(0,0,0,0.28);
+      border: 1px solid rgba(255,255,255,0.18);
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .arc-wrap { display: flex; flex-direction: column; align-items: center; padding: 4px 0; }
+    .arc-box { position: relative; width: 240px; height: 132px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
+    .arc-svg { position: absolute; top: 0; left: 0; width: 240px; height: 132px; }
+    .arc-content { position: relative; z-index: 2; text-align: center; padding-bottom: 4px; }
+    .sun-pill {
+      margin-top: 10px;
+      background: rgba(255,255,255,0.12);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.92);
+    }
+    .card {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    @media (min-width: 960px) { .card { border: 1px solid var(--border); border-radius: 22px; } }
+    .card-head {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .madhab-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      padding: 10px 14px;
+      background: #101516;
+      border-bottom: 1px solid var(--border);
+    }
+    .madhab-btn {
+      padding: 8px 4px;
+      border-radius: 10px;
+      border: none;
+      background: #1a2223;
+      color: rgba(255,255,255,0.72);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .madhab-btn.active { background: var(--emerald); color: #fff; }
+    .method-sel {
+      background: #1b2425;
+      border: 1px solid rgba(255,255,255,0.14);
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-family: inherit;
+    }
+    .waqt-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 13px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .waqt-row:last-child { border-bottom: none; }
+    .waqt-row.active { background: rgba(0, 168, 107, 0.14); }
+    .pad { padding: 18px; }
+    .sahri-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+    .box-soft { background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 16px; padding: 12px; }
+    .countdown-pill {
+      margin-top: 12px;
+      background: var(--emerald-soft);
+      border: 1px solid rgba(0,168,107,0.3);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .ramadan-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .ramadan-badge {
+      width: 72px; height: 72px; border-radius: 16px;
+      background: var(--emerald-soft); border: 1px solid rgba(0,168,107,0.35);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .compass-ring {
+      width: 248px; height: 248px; margin: 12px auto; border-radius: 999px;
+      border: 4px solid rgba(255,255,255,0.16);
+      background: radial-gradient(circle, #10191a 0%, #090e0f 100%);
+      position: relative; display: flex; align-items: center; justify-content: center;
+    }
+    .compass-ring.aligned { border-color: var(--emerald); box-shadow: 0 0 24px rgba(0,168,107,0.3); }
+    .compass-rose { position: absolute; inset: 0; will-change: transform; }
+    .needle-qibla {
+      position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; padding-top: 18px;
+    }
+    .btn-primary {
+      width: 100%; padding: 12px; border-radius: 14px; border: none; background: var(--emerald);
+      color: #fff; font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit;
+    }
+    .modal-bg {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: none;
+      align-items: center; justify-content: center; padding: 16px; z-index: 50;
+    }
+    .modal-bg.open { display: flex; }
+    .modal-box {
+      background: #141a1b; border: 1px solid var(--border); border-radius: 20px;
+      width: 100%; max-width: 440px; max-height: 82vh; overflow-y: auto; padding: 18px;
+    }
+    .city-btn {
+      width: 100%; text-align: left; padding: 10px 14px; border-radius: 12px; margin-bottom: 8px;
+      border: 1px solid var(--border); background: #1a2224; color: #fff; cursor: pointer;
+      display: flex; justify-content: space-between; font-family: inherit;
+    }
+    .city-btn.sel { border-color: var(--emerald); background: var(--emerald-soft); }
+  </style>
+<script src="/_aistudio-iframe.js?v=29045eb3"></script></head>
+<body>
+  <div class="app-shell">
+    <div class="grid-2">
+      <div class="stack">
+        <section class="hero">
+          <div class="top-bar">
+            <div>
+              <div id="hijriDate" style="font-size:14px;font-weight:700">--</div>
+              <div id="gregDate" style="font-size:12px;color:rgba(255,255,255,0.78)">--</div>
+            </div>
+            <button class="loc-btn" onclick="openCityModal()" id="cityBtn">📍 ঢাকা ▾</button>
+          </div>
+          <div class="arc-wrap">
+            <div class="arc-box">
+              <svg class="arc-svg" viewBox="0 0 240 132">
+                <path d="M 24 120 A 96 96 0 0 1 216 120" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="11" stroke-linecap="round"/>
+                <path id="arcProgress" d="M 24 120 A 96 96 0 0 1 216 120" fill="none" stroke="#ffffff" stroke-width="11" stroke-linecap="round" stroke-dasharray="301.6" stroke-dashoffset="150"/>
+              </svg>
+              <div class="arc-content">
+                <div id="activeWaqtName" style="font-size:24px;font-weight:700">ফজর</div>
+                <div id="activeWaqtSub" style="font-size:12px;color:rgba(255,255,255,0.8)">শেষ হতে বাকি</div>
+                <div id="activeWaqtTimer" class="tabular" style="font-size:28px;font-weight:700">০০:০০:০০</div>
+              </div>
+            </div>
+            <div class="sun-pill tabular" id="sunInfo">সূর্যোদয়: --:-- | সূর্যাস্ত: --:--</div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-head">
+            <div>
+              <div style="font-size:15px;font-weight:700">আজকের নামাজের সময়সূচি</div>
+              <div id="madhabSub" style="font-size:11px;color:var(--muted);font-weight:500">হানাফী (আসর: ২ গুণ ছায়া)</div>
+            </div>
+            <select id="methodSelect" class="method-sel" onchange="changeMethod(this.value)">
+              <option value="karachi">বাংলাদেশ / করাচি</option>
+              <option value="mwl">MWL (১৮°/১৭°)</option>
+              <option value="makkah">উম্মুল কুরা (মক্কা)</option>
+              <option value="egypt">মিশরীয়</option>
+              <option value="singapore">সিঙ্গাপুর (MUIS)</option>
+              <option value="isna">ISNA</option>
+            </select>
+          </div>
+          <div class="madhab-bar" id="madhabBar"></div>
+          <div id="waqtList"></div>
+        </section>
+
+        <section class="card pad" style="background:linear-gradient(180deg,#141a1b 0%,#0f261e 100%)">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <h2 style="font-size:16px;font-weight:700">সেহরি ও ইফতারের সময়</h2>
+            <span id="sahriCity" style="font-size:12px;color:#34d399;font-weight:600">ঢাকা</span>
+          </div>
+          <div class="sahri-grid">
+            <div class="box-soft">
+              <div style="font-size:12px;color:var(--muted)">সেহরির শেষ সময়</div>
+              <div id="sahriTime" class="tabular" style="font-size:18px;font-weight:700;margin-top:4px">--:--</div>
+            </div>
+            <div class="box-soft">
+              <div style="font-size:12px;color:var(--muted)">ইফতারের সময়</div>
+              <div id="iftarTime" class="tabular" style="font-size:18px;font-weight:700;color:#fcd34d;margin-top:4px">--:--</div>
+            </div>
+          </div>
+          <div class="countdown-pill">
+            <span id="sahriCdLbl" style="font-size:13px">ইফতারের বাকি</span>
+            <span id="sahriCdVal" class="tabular" style="font-size:18px;font-weight:700;color:#34d399">--:--:--</span>
+          </div>
+        </section>
+      </div>
+
+      <div class="stack">
+        <section class="card pad" id="ramadanCard"></section>
+
+        <section class="card pad">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+            <div>
+              <h2 style="font-size:17px;font-weight:700">🧭 লাইভ কিবলা ও পশ্চিম দিক কম্পাস</h2>
+              <p style="font-size:12px;color:var(--muted)">ফোনটি হাতে ধরে ঘুরান — কম্পাস স্বয়ংক্রিয়ভাবে ঘুরে সঠিক পশ্চিম দেখাবে</p>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button class="loc-btn" onclick="toggleCalBox()">ঠিক করুন</button>
+              <button class="loc-btn" onclick="restartCompass()">↻</button>
+              <button class="loc-btn" onclick="useGps()" style="background:var(--emerald-soft);border-color:rgba(0,168,107,0.4);color:#34d399">📍 GPS</button>
+            </div>
+          </div>
+
+          <a id="iframeWarnLink" href="#" target="_blank" rel="noopener noreferrer" style="display:none;margin-top:10px;width:100%;padding:10px 14px;border-radius:14px;background:var(--emerald);color:#fff;font-size:12px;font-weight:700;text-align:center;text-decoration:none">↗ আসল ম্যাগনেটিক কম্পাস চালাতে ব্রাউজারে সরাসরি খুলুন</a>
+          <div id="gyroBanner" style="display:none;margin-top:10px;background:rgba(245,158,11,0.12);border:1px solid rgba(251,191,36,0.35);border-radius:14px;padding:10px;text-align:center">
+            <div id="gyroBannerTxt" style="font-size:11px;font-weight:700;color:#fcd34d;margin-bottom:6px">⚠ ম্যাগনেটোমিটার বন্ধ — ফোনটি যেদিকে ধরে আছেন সেটি চাপুন:</div>
+            <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:5px">
+              <button id="gyroSunBtn" onclick="alignWithSun()" style="display:none;background:rgba(251,191,36,0.2);border:1px solid rgba(251,191,36,0.4);color:#fde68a;font-size:11px;font-weight:600;padding:5px 9px;border-radius:8px;cursor:pointer;font-family:inherit">☀ সূর্যের দিকে</button>
+              <button onclick="alignDirHere(90)" class="loc-btn" style="font-size:11px;padding:5px 9px">পূর্ব (৯০°)</button>
+              <button onclick="alignDirHere(270)" class="loc-btn" style="font-size:11px;padding:5px 9px;color:#fcd34d">পশ্চিম (২৭০°)</button>
+              <button onclick="alignDirHere(0)" class="loc-btn" style="font-size:11px;padding:5px 9px;color:#fca5a5">উত্তর (০°)</button>
+              <button onclick="alignDirHere(180)" class="loc-btn" style="font-size:11px;padding:5px 9px">দক্ষিণ (১৮০°)</button>
+            </div>
+          </div>
+
+          <button id="iosPermBtn" class="btn-primary" style="margin-top:12px;display:none" onclick="requestIosCompass()">মোবাইল কম্পাস সেন্সর চালু করুন</button>
+
+          <div style="text-align:center;margin-top:10px">
+            <div id="screenQiblaTitle" class="tabular" style="font-size:22px;font-weight:700">কিবলা ২৭৮°</div>
+            <div id="headingText" class="tabular" style="font-size:11px;color:var(--muted);margin-top:2px">মোবাইলের দিক: ০° (উত্তর)</div>
+          </div>
+          <div class="compass-ring" id="compassRing">
+            <div class="compass-rose" id="compassRose">
+              <svg viewBox="0 0 248 248" style="width:100%;height:100%">
+                <g id="dialTicks"></g>
+                <text x="124" y="38" text-anchor="middle" fill="#ef4444" font-size="13" font-weight="800">N</text>
+                <text x="214" y="129" text-anchor="middle" fill="#ffffff" font-size="13" font-weight="700">E</text>
+                <text x="124" y="220" text-anchor="middle" fill="#ffffff" font-size="13" font-weight="700">S</text>
+                <text x="34" y="129" text-anchor="middle" fill="#fbbf24" font-size="13" font-weight="800">W</text>
+              </svg>
+              <div id="sunNeedle" style="position:absolute;inset:0;display:none;justify-content:center;align-items:flex-start;padding-top:4px;pointer-events:none">
+                <span style="background:#fcd34d;color:#0a0f10;font-size:9px;font-weight:700;padding:1px 4px;border-radius:99px">☀</span>
+              </div>
+              <div id="qiblaNeedle" style="position:absolute;inset:0;pointer-events:none">
+                <svg viewBox="0 0 248 248" style="width:100%;height:100%">
+                  <polygon points="124,34 117,124 131,124" fill="#00a86b"/>
+                  <circle cx="124" cy="124" r="10" fill="#00a86b"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div id="alignGuide" class="box-soft tabular" style="text-align:center;font-size:13px;font-weight:600">--</div>
+          <div id="calBox" style="display:none;margin-top:8px;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.22);border-radius:12px;padding:10px">
+            <div style="font-size:11px;color:#fde68a;margin-bottom:6px;display:flex;justify-content:space-between">
+              <span>দিক ক্যালিব্রেশন</span>
+              <span id="calResetLink" style="display:none;cursor:pointer;text-decoration:underline" onclick="resetCompassCal()">সব রিসেট</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px">
+              <button id="sunCalBtn" onclick="alignWithSun()" style="display:none;background:rgba(251,191,36,0.18);border:1px solid rgba(251,191,36,0.4);color:#fde68a;font-size:11px;font-weight:600;padding:5px 9px;border-radius:8px;cursor:pointer;font-family:inherit">☀ সূর্য সেট</button>
+              <button id="mirrorBtn" onclick="toggleMirror()" class="loc-btn" style="font-size:11px;padding:5px 9px">পূর্ব ↔ পশ্চিম ফ্লিপ</button>
+              <button onclick="alignNorthHere()" class="loc-btn" style="font-size:11px;padding:5px 9px">উত্তর (০°) সেট</button>
+              <button onclick="alignDirHere(90)" class="loc-btn" style="font-size:11px;padding:5px 9px">পূর্ব (৯০°)</button>
+              <button onclick="alignDirHere(270)" class="loc-btn" style="font-size:11px;padding:5px 9px;color:#fcd34d">পশ্চিম (২৭০°)</button>
+              <button onclick="nudgeCal(180)" class="loc-btn" style="font-size:11px;padding:5px 9px">১৮০° উল্টান</button>
+              <button onclick="nudgeCal(-10)" class="loc-btn" style="font-size:11px;padding:5px 9px">-১০°</button>
+              <button onclick="nudgeCal(10)" class="loc-btn" style="font-size:11px;padding:5px 9px">+১০°</button>
+            </div>
+          </div>
+          <div id="sunCalBox" style="display:none;margin-top:8px;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.22);border-radius:12px;padding:8px 10px;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+            <span id="sunCalInfo" style="font-size:11px;color:#fde68a"></span>
+            <button onclick="alignWithSun()" style="background:rgba(251,191,36,0.18);border:1px solid rgba(251,191,36,0.4);color:#fde68a;font-size:11px;font-weight:600;padding:5px 10px;border-radius:8px;cursor:pointer;font-family:inherit">সূর্যের দিকে ধরে সেট</button>
+          </div>
+          <div style="margin-top:10px;font-size:11px;color:var(--muted)" id="sensorNote">
+            <input type="range" min="0" max="359" value="0" oninput="manualHeading=Number(this.value);updateCompass()" style="width:100%;accent-color:#00a86b" />
+          </div>
+        </section>
+
+        <!-- Digital Tasbih Counter Card -->
+        <section class="card pad">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+            <div>
+              <h2 style="font-size:17px;font-weight:700">📿 ডিজিটাল তসবি গণনা</h2>
+              <p style="font-size:12px;color:var(--muted)">জিকির নির্বাচন করে বড় বাটনে ট্যাপ করুন</p>
+            </div>
+            <div style="display:flex;gap:4px" id="tasbihTargets"></div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px" id="tasbihPresets"></div>
+          <div style="text-align:center;margin-top:14px">
+            <div id="tasbihArabic" style="font-size:22px;font-weight:700" dir="rtl"></div>
+            <div id="tasbihTitle" style="font-size:12px;color:#34d399;margin-top:2px"></div>
+            <button onclick="tapTasbih()" style="position:relative;width:144px;height:144px;margin:12px auto 0;border-radius:999px;border:none;background:radial-gradient(circle,#1c2829 0%,#0f1617 100%);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,0.45)">
+              <svg viewBox="0 0 144 144" style="position:absolute;inset:0;width:144px;height:144px;transform:rotate(-90deg);pointer-events:none">
+                <circle cx="72" cy="72" r="62" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="8"/>
+                <circle id="tasbihRing" cx="72" cy="72" r="62" fill="none" stroke="#00a86b" stroke-width="8" stroke-linecap="round" stroke-dasharray="389.56" stroke-dashoffset="389.56"/>
+              </svg>
+              <span id="tasbihCount" class="tabular" style="font-size:34px;font-weight:700;line-height:1">০</span>
+              <span id="tasbihTargetLbl" class="tabular" style="font-size:12px;color:var(--muted);margin-top:4px">/ ৩৩</span>
+            </button>
+          </div>
+          <div class="box-soft" style="margin-top:12px;display:flex;justify-content:space-between;align-items:center">
+            <div class="tabular" style="font-size:12px">
+              রাউন্ড: <strong id="tasbihRounds" style="color:#34d399">০</strong> · মোট: <strong id="tasbihTotal">০</strong>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button class="loc-btn" onclick="resetTasbih()" style="font-size:11px;padding:5px 9px">রিসেট</button>
+              <button class="loc-btn" onclick="clearTasbihAll()" style="font-size:11px;padding:5px 9px;color:#fca5a5">সব মুছুন</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-bg" id="cityModal" onclick="if(event.target===this) closeCityModal()">
+    <div class="modal-box">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <h3 style="font-size:17px;font-weight:700">শহর নির্বাচন করুন</h3>
+        <button class="loc-btn" onclick="closeCityModal()">✕</button>
+      </div>
+      <div id="cityList"></div>
+    </div>
+  </div>
+
+  <script>
+    const BN = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+    const toBn = s => String(s).replace(/\d/g, d => BN[d]);
+    const pad2 = n => toBn(String(Math.floor(n)).padStart(2,'0'));
+    const fmtMin = (m, p) => {
+      const n = ((Math.round(m) % 1440) + 1440) % 1440;
+      const h = Math.floor(n / 60), min = n % 60;
+      const base = pad2(h % 12 || 12) + ':' + pad2(min);
+      if (!p) return base;
+      let per = 'রাত';
+      if (h>=4 && h<6) per='ভোর'; else if (h>=6 && h<12) per='সকাল';
+      else if (h>=12 && h<15) per='দুপুর'; else if (h>=15 && h<17) per='বিকাল';
+      else if (h>=17 && h<19) per='সন্ধ্যা';
+      return base + ' (' + per + ')';
+    };
+    const fmtSec = s => {
+      const x = Math.max(0, Math.floor(s));
+      return pad2(Math.floor(x / 3600)) + ':' + pad2(Math.floor((x % 3600) / 60)) + ':' + pad2(x % 60);
+    };
+
+    const METHODS = {
+      karachi: { fajr:18, isha:18 },
+      mwl: { fajr:18, isha:17 },
+      makkah: { fajr:18.5, isha:0, ishaMin:90 },
+      egypt: { fajr:19.5, isha:17.5 },
+      singapore: { fajr:20, isha:18 },
+      isna: { fajr:15, isha:15 }
+    };
+    const MADHABS = [
+      { id:'hanafi', name:'হানাফী', note:'আসর: ২ গুণ ছায়া' },
+      { id:'shafi', name:'শাফেয়ী', note:'আসর: ১ গুণ ছায়া' },
+      { id:'maliki', name:'মালেকী', note:'আসর: ১ গুণ ছায়া' },
+      { id:'hanbali', name:'হাম্বলী', note:'আসর: ১ গুণ ছায়া' }
+    ];
+    const CITIES = [
+      { id:'dhaka', nameBn:'ঢাকা', lat:23.8103, lng:90.4125, tz:6 },
+      { id:'chattogram', nameBn:'চট্টগ্রাম', lat:22.3569, lng:91.7832, tz:6 },
+      { id:'sylhet', nameBn:'সিলেট', lat:24.8949, lng:91.8687, tz:6 },
+      { id:'rajshahi', nameBn:'রাজশাহী', lat:24.3745, lng:88.6042, tz:6 },
+      { id:'khulna', nameBn:'খুলনা', lat:22.8456, lng:89.5403, tz:6 },
+      { id:'barishal', nameBn:'বরিশাল', lat:22.7010, lng:90.3535, tz:6 },
+      { id:'rangpur', nameBn:'রংপুর', lat:25.7439, lng:89.2752, tz:6 },
+      { id:'mymensingh', nameBn:'ময়মনসিংহ', lat:24.7471, lng:90.4203, tz:6 },
+      { id:'kolkata', nameBn:'কলকাতা', lat:22.5726, lng:88.3639, tz:5.5 },
+      { id:'singapore', nameBn:'সিঙ্গাপুর', lat:1.3521, lng:103.8198, tz:8 },
+      { id:'makkah', nameBn:'মক্কা', lat:21.4225, lng:39.8262, tz:3 }
+    ];
+
+    let prefs = JSON.parse(localStorage.getItem('md_prefs_v3') || 'null') || {
+      city: CITIES[0], method: 'karachi', madhab: 'hanafi'
+    };
+    function savePrefs() { localStorage.setItem('md_prefs_v3', JSON.stringify(prefs)); }
+
+    let sensorHeading = null, prevRawHeading = null, cumulativeDial = 0, smoothVec = null, manualHeading = 0;
+
+    const D2R = Math.PI / 180, R2D = 180 / Math.PI;
+    function calcSchedule(cNow, city) {
+      let y = cNow.getFullYear(), m = cNow.getMonth() + 1, d = cNow.getDate();
+      if (m <= 2) { y--; m += 12; }
+      const A = Math.floor(y/100), B = 2 - A + Math.floor(A/4);
+      const jd = Math.floor(365.25*(y+4716)) + Math.floor(30.6001*(m+1)) + d + B - 1524.5 - city.lng/360;
+      const D = jd - 2451545;
+      const g = (357.529 + 0.98560028 * D) % 360;
+      const q = (280.459 + 0.98564736 * D) % 360;
+      const L = (q + 1.915 * Math.sin(g*D2R) + 0.02 * Math.sin(2*g*D2R)) % 360;
+      const e = 23.439 - 0.00000036 * D;
+      const RA = Math.atan2(Math.cos(e*D2R)*Math.sin(L*D2R), Math.cos(L*D2R))*R2D/15;
+      let eq = (((q/15)%24)+24)%24 - ((RA%24)+24)%24;
+      if (eq > 12) eq -= 24; if (eq < -12) eq += 24;
+      const decl = Math.asin(Math.sin(e*D2R)*Math.sin(L*D2R))*R2D;
+      const noon = 12 + city.tz - city.lng/15 - eq;
+      const angleTime = (ang, dir) => {
+        const term = (-Math.sin(ang*D2R) - Math.sin(city.lat*D2R)*Math.sin(decl*D2R)) / (Math.cos(city.lat*D2R)*Math.cos(decl*D2R));
+        const t = Math.acos(Math.max(-1, Math.min(1, term))) * R2D / 15;
+        return dir === 'ccw' ? noon - t : noon + t;
+      };
+      const toMin = h => Math.round((((h % 24) + 24) % 24) * 60);
+      const meth = METHODS[prefs.method] || METHODS.karachi;
+      const fajr = toMin(angleTime(meth.fajr, 'ccw'));
+      const sunrise = toMin(angleTime(0.833, 'ccw'));
+      const dhuhr = toMin(noon);
+      const factor = prefs.madhab === 'hanafi' ? 2 : 1;
+      const asrAng = -Math.atan(1 / (factor + Math.tan(Math.abs(city.lat - decl)*D2R))) * R2D;
+      const asr = toMin(angleTime(asrAng, 'cw'));
+      const maghribH = angleTime(0.833, 'cw');
+      const maghrib = toMin(maghribH);
+      const isha = meth.ishaMin ? toMin(maghribH + meth.ishaMin/60) : toMin(angleTime(meth.isha, 'cw'));
+      return { fajr, sunrise, dhuhr, asr, maghrib, isha, isFriday: cNow.getDay() === 5 };
+    }
+
+    function getHijri(date) {
+      try {
+        const parts = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', { day:'numeric', month:'numeric', year:'numeric' }).formatToParts(date);
+        return {
+          day: Number(parts.find(p => p.type==='day').value),
+          month: Number(parts.find(p => p.type==='month').value),
+          year: Number(parts.find(p => p.type==='year').value)
+        };
+      } catch(e) { return { day:1, month:1, year:1448 }; }
+    }
+
+    function getQiblaDeg(city) {
+      const kLat = 21.4225*D2R, kLng = 39.8262*D2R, phi = city.lat*D2R, lam = city.lng*D2R;
+      return Math.round((((Math.atan2(Math.sin(kLng-lam)*Math.cos(kLat), Math.cos(phi)*Math.sin(kLat)-Math.sin(phi)*Math.cos(kLat)*Math.cos(kLng-lam))*R2D)+360)%360)*10)/10;
+    }
+
+    function calcSunPos(now, city) {
+      const c = new Date(now.getTime() + now.getTimezoneOffset()*60000 + city.tz*3600000);
+      const localH = c.getHours() + c.getMinutes()/60 + c.getSeconds()/3600;
+      let y = c.getFullYear(), m = c.getMonth() + 1, d = c.getDate();
+      if (m <= 2) { y--; m += 12; }
+      const A = Math.floor(y/100), B = 2 - A + Math.floor(A/4);
+      const jd = Math.floor(365.25*(y+4716)) + Math.floor(30.6001*(m+1)) + d + B - 1524.5 + (localH - city.tz)/24;
+      const D = jd - 2451545;
+      const g = (357.529 + 0.98560028 * D) % 360;
+      const q = (280.459 + 0.98564736 * D) % 360;
+      const L = (q + 1.915 * Math.sin(g*D2R) + 0.02 * Math.sin(2*g*D2R)) % 360;
+      const e = 23.439 - 0.00000036 * D;
+      const RA = Math.atan2(Math.cos(e*D2R)*Math.sin(L*D2R), Math.cos(L*D2R))*R2D/15;
+      let eq = (((q/15)%24)+24)%24 - ((RA%24)+24)%24;
+      if (eq > 12) eq -= 24; if (eq < -12) eq += 24;
+      const decl = Math.asin(Math.sin(e*D2R)*Math.sin(L*D2R));
+      const noon = 12 + city.tz - city.lng/15 - eq;
+      const H = (localH - noon) * 15 * D2R;
+      const latR = city.lat * D2R;
+      const alt = Math.asin(Math.max(-1, Math.min(1, Math.sin(latR)*Math.sin(decl) + Math.cos(latR)*Math.cos(decl)*Math.cos(H)))) * R2D;
+      const azX = -Math.cos(decl)*Math.sin(H);
+      const azY = Math.sin(decl)*Math.cos(latR) - Math.cos(decl)*Math.sin(latR)*Math.cos(H);
+      return { az: Math.round((((Math.atan2(azX, azY)*R2D)+360)%360)*10)/10, up: alt > 0.5 };
+    }
+
+    function dirNameBn(deg) {
+      const dirs = ['উত্তর','উত্তর-পূর্ব','পূর্ব','দক্ষিণ-পূর্ব','দক্ষিণ','দক্ষিণ-পশ্চিম','পশ্চিম','উত্তর-পশ্চিম'];
+      return dirs[Math.round((((deg%360)+360)%360)/45) % 8];
+    }
+
+    const savedCal = JSON.parse(localStorage.getItem('md_compass_cal_v1') || 'null') || { offset:0, mirror:false };
+    let calOffset = Number(savedCal.offset) || 0;
+    let mirrorEastWest = Boolean(savedCal.mirror);
+    let gyroMode = false, gyroCalibrated = false;
+    function saveCompassCal() { localStorage.setItem('md_compass_cal_v1', JSON.stringify({ offset: calOffset, mirror: mirrorEastWest })); }
+    function getOrientedRaw() {
+      if (sensorHeading === null) return null;
+      return mirrorEastWest ? (360 - sensorHeading) % 360 : sensorHeading;
+    }
+    function getScreenAng() { return Number((screen.orientation && screen.orientation.angle) || window.orientation || 0) || 0; }
+    function headingFromEuler(alpha, beta, gamma) {
+      const a = alpha*D2R, b = (typeof beta==='number'&&!isNaN(beta)?beta:0)*D2R, g = (typeof gamma==='number'&&!isNaN(gamma)?gamma:0)*D2R;
+      const sA = Math.sin(a), cA = Math.cos(a), sB = Math.sin(b), cB = Math.cos(b), sG = Math.sin(g), cG = Math.cos(g);
+      const yE = -sA*cB, yN = cA*cB;
+      let rad;
+      if (Math.hypot(yE, yN) > 0.15) rad = Math.atan2(yE, yN);
+      else {
+        const sign = sB >= 0 ? -1 : 1;
+        rad = Math.atan2(sign*(cA*sG + sA*sB*cG), sign*(sA*sG - cA*sB*cG));
+      }
+      return ((rad*R2D) + getScreenAng() + 360) % 360;
+    }
+    function headingFromQuat(qx, qy, qz, qw, skipScreen) {
+      const ex = 2*(qx*qy - qw*qz), ey = 1 - 2*(qx*qx + qz*qz);
+      let rad;
+      if (Math.hypot(ex, ey) > 0.15) rad = Math.atan2(ex, ey);
+      else {
+        const sign = (2*(qy*qz + qw*qx)) >= 0 ? -1 : 1;
+        rad = Math.atan2(sign*2*(qx*qz + qw*qy), sign*2*(qy*qz - qw*qx));
+      }
+      return ((rad*R2D) + (skipScreen ? 0 : getScreenAng()) + 360) % 360;
+    }
+
+    function pushCompassHeading(raw, label, isGyro) {
+      gyroMode = Boolean(isGyro);
+      const norm = ((raw % 360) + 360) % 360;
+      const rad = norm * D2R, a = 0.25;
+      if (!smoothVec) smoothVec = { s: Math.sin(rad), c: Math.cos(rad) };
+      else smoothVec = { s: smoothVec.s*(1-a)+Math.sin(rad)*a, c: smoothVec.c*(1-a)+Math.cos(rad)*a };
+      const sm = ((Math.atan2(smoothVec.s, smoothVec.c)*R2D)+360)%360;
+      sensorHeading = Math.round(sm*10)/10;
+      const oriented = getOrientedRaw();
+      const adj = (((oriented + calOffset) % 360) + 360) % 360;
+      if (prevRawHeading === null) cumulativeDial = -adj;
+      else cumulativeDial -= (((adj - prevRawHeading + 540) % 360) - 180);
+      prevRawHeading = adj;
+      document.getElementById('sensorNote').textContent = '✓ ' + label + ' (বাতাসে ৮-আকৃতিতে ঘুরিয়ে ক্যালিব্রেট করতে পারেন)';
+      updateCompass();
+    }
+
+    function alignDirHere(targetDeg) {
+      const oriented = getOrientedRaw();
+      if (oriented !== null) {
+        calOffset = ((targetDeg - oriented + 540) % 360) - 180;
+        gyroCalibrated = true;
+        prevRawHeading = null;
+        saveCompassCal();
+        updateCompass();
+      } else {
+        manualHeading = Math.round(targetDeg);
+        updateCompass();
+      }
+    }
+
+    function alignWithSun() {
+      const sun = calcSunPos(new Date(), prefs.city);
+      if (!sun.up) return;
+      alignDirHere(sun.az);
+    }
+
+    function updateCompass() {
+      const qDeg = getQiblaDeg(prefs.city);
+      const sun = calcSunPos(new Date(), prefs.city);
+      const oriented = getOrientedRaw();
+      const h = oriented !== null ? (((oriented + calOffset) % 360) + 360) % 360 : manualHeading;
+      const rot = oriented !== null ? (prevRawHeading === null ? -h : cumulativeDial) : -manualHeading;
+      if (oriented !== null && prevRawHeading === null) { cumulativeDial = -h; prevRawHeading = h; }
+      document.getElementById('compassRose').style.transform = 'rotate(' + rot + 'deg)';
+      document.getElementById('qiblaNeedle').style.transform = 'rotate(' + qDeg + 'deg)';
+      const sunNeedle = document.getElementById('sunNeedle');
+      const sunBox = document.getElementById('sunCalBox');
+      const sunCalBtn = document.getElementById('sunCalBtn');
+      const gyroSunBtn = document.getElementById('gyroSunBtn');
+      if (sun.up) {
+        sunNeedle.style.display = 'flex';
+        sunNeedle.style.transform = 'rotate(' + sun.az + 'deg)';
+        sunBox.style.display = 'flex';
+        sunCalBtn.style.display = 'inline-block';
+        gyroSunBtn.style.display = 'inline-block';
+        document.getElementById('sunCalInfo').textContent = '☀ সূর্যের দিক: ' + toBn(sun.az) + '° (' + dirNameBn(sun.az) + ')';
+      } else {
+        sunNeedle.style.display = 'none';
+        sunBox.style.display = 'none';
+        sunCalBtn.style.display = 'none';
+        gyroSunBtn.style.display = 'none';
+      }
+      const inIframe = window.self !== window.top;
+      const iframeLink = document.getElementById('iframeWarnLink');
+      iframeLink.href = window.location.href;
+      iframeLink.style.display = (inIframe && (gyroMode || sensorHeading === null)) ? 'block' : 'none';
+      const gb = document.getElementById('gyroBanner');
+      gb.style.display = gyroMode ? 'block' : 'none';
+      if (gyroMode) {
+        document.getElementById('gyroBannerTxt').textContent = gyroCalibrated
+          ? '✓ জাইরো দিক সেট করা আছে (ঘোরার সাথে ঠিক দিক দেখাবে)'
+          : '⚠ ম্যাগনেটোমিটার বন্ধ — ফোনটি যেদিকে ধরে আছেন সেটি চাপুন:';
+      }
+      document.getElementById('calResetLink').style.display = (calOffset !== 0 || mirrorEastWest) ? 'inline' : 'none';
+      const mb = document.getElementById('mirrorBtn');
+      mb.textContent = 'পূর্ব ↔ পশ্চিম ফ্লিপ' + (mirrorEastWest ? ' ✓' : '');
+      mb.style.borderColor = mirrorEastWest ? 'rgba(251,191,36,0.55)' : 'rgba(255,255,255,0.18)';
+
+      const screenQibla = Math.round(((qDeg - h + 360) % 360));
+      document.getElementById('screenQiblaTitle').textContent = 'কিবলা ' + toBn(screenQibla) + '°';
+      document.getElementById('headingText').textContent = (gyroMode && !gyroCalibrated)
+        ? 'জাইরো অসমন্বিত (' + toBn(Math.round(h)) + '°) — উপরের দিক সেট করুন'
+        : 'মোবাইলের দিক: ' + toBn(Math.round(h)) + '° (' + dirNameBn(h) + ')';
+      let diff = Math.round(((qDeg - h + 540) % 360) - 180);
+      const aligned = Math.abs(diff) <= 5;
+      document.getElementById('compassRing').classList.toggle('aligned', aligned);
+      const guide = document.getElementById('alignGuide');
+      if (aligned) {
+        guide.style.color = '#34d399';
+        guide.textContent = '✓ সঠিক কিবলা / পশ্চিম দিকে মুখ করা আছে!';
+      } else {
+        guide.style.color = '#f1f5f4';
+        guide.textContent = 'কিবলার ('+toBn(qDeg)+'°) জন্য ' + (diff>0 ? 'ডানে '+toBn(diff)+'°' : 'বামে '+toBn(Math.abs(diff))+'°') + ' ঘোরান · পশ্চিম: ২৭০°';
+      }
+    }
+
+    function setMadhab(id) { prefs.madhab = id; savePrefs(); render(); }
+    function changeMethod(id) { prefs.method = id; savePrefs(); render(); }
+
+    function render() {
+      const now = new Date();
+      const cNow = new Date(now.getTime() + now.getTimezoneOffset()*60000 + prefs.city.tz*3600000);
+      const daysBn = ['রবি','সোম','মঙ্গল','বুধ','বৃহঃ','শুক্র','শনি'];
+      const fullDays = ['রবিবার','সোমবার','মঙ্গলবার','বুধবার','বৃহস্পতিবার','শুক্রবার','শনিবার'];
+      const monthsBn = ['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
+      const hMonths = ['মুহররম','সফর','রবিউল আউয়াল','রবিউস সানি','জুমাদাল উলা','জুমাদাল আখিরাহ','রজব','শাবান','রমজান','শাওয়াল','জিলকদ','জিলহজ'];
+
+      const h = getHijri(cNow);
+      document.getElementById('hijriDate').textContent = daysBn[cNow.getDay()] + ', ' + toBn(h.day) + ' ' + hMonths[(h.month-1)%12] + ' ' + toBn(h.year) + ' হি.';
+      document.getElementById('gregDate').textContent = toBn(cNow.getDate()) + ' ' + monthsBn[cNow.getMonth()] + ', ' + toBn(cNow.getFullYear());
+      document.getElementById('cityBtn').textContent = '📍 ' + prefs.city.nameBn + ' ▾';
+      document.getElementById('sahriCity').textContent = prefs.city.nameBn;
+      document.getElementById('methodSelect').value = prefs.method;
+
+      const curM = MADHABS.find(m => m.id === prefs.madhab) || MADHABS[0];
+      document.getElementById('madhabSub').textContent = curM.name + ' (' + curM.note + ')';
+      document.getElementById('madhabBar').innerHTML = MADHABS.map(m =>
+        '<button class="madhab-btn '+(m.id===prefs.madhab?'active':'')+'" onclick="setMadhab(\''+m.id+'\')">'+m.name+'</button>'
+      ).join('');
+
+      const sch = calcSchedule(cNow, prefs.city);
+      document.getElementById('sunInfo').textContent = 'সূর্যোদয়: ' + fmtMin(sch.sunrise) + ' | সূর্যাস্ত: ' + fmtMin(sch.maghrib);
+
+      const waqts = [
+        { id:'fajr', name:'ফজর', start:sch.fajr, end:sch.sunrise-1 },
+        { id:'dhuhr', name:sch.isFriday?'জুমআ':'জোহর', start:sch.dhuhr, end:sch.asr-1 },
+        { id:'asr', name:'আসর', start:sch.asr, end:sch.maghrib-1 },
+        { id:'maghrib', name:'মাগরিব', start:sch.maghrib, end:sch.isha-1 },
+        { id:'isha', name:'ইশা', start:sch.isha, end:sch.fajr-1 }
+      ];
+
+      const curSec = cNow.getHours()*3600 + cNow.getMinutes()*60 + cNow.getSeconds();
+      let activeId = 'isha', label = 'ইশা', sub = 'শেষ হতে বাকি', rem = 0, prog = 0.5, found = false;
+      for (let i=0; i<4; i++) {
+        if (curSec >= waqts[i].start*60 && curSec <= waqts[i].end*60) {
+          activeId = waqts[i].id; label = waqts[i].name; sub = 'শেষ হতে বাকি';
+          rem = waqts[i].end*60 - curSec;
+          prog = (curSec - waqts[i].start*60) / Math.max(1, (waqts[i].end - waqts[i].start)*60);
+          found = true; break;
+        }
+      }
+      if (!found) {
+        if (curSec >= sch.isha*60 || curSec < sch.fajr*60) {
+          activeId = 'isha'; label = 'ইশা'; sub = 'শেষ হতে বাকি';
+          const tot = ((sch.fajr + 1440 - sch.isha) % 1440) * 60;
+          const el = curSec >= sch.isha*60 ? curSec - sch.isha*60 : curSec + 86400 - sch.isha*60;
+          rem = Math.max(0, tot - el); prog = el / Math.max(1, tot);
+        } else {
+          activeId = ''; label = waqts[1].name; sub = 'শুরু হতে বাকি';
+          rem = sch.dhuhr*60 - curSec;
+          prog = (curSec - sch.sunrise*60) / Math.max(1, (sch.dhuhr - sch.sunrise)*60);
+        }
+      }
+
+      document.getElementById('activeWaqtName').textContent = label;
+      document.getElementById('activeWaqtSub').textContent = sub;
+      document.getElementById('activeWaqtTimer').textContent = fmtSec(rem);
+      document.getElementById('arcProgress').setAttribute('stroke-dashoffset', String(301.6 * (1 - prog)));
+
+      document.getElementById('waqtList').innerHTML = waqts.map(w => {
+        const cur = w.id === activeId;
+        return '<div class="waqt-row '+(cur?'active':'')+'">' +
+          '<div><strong>'+w.name+'</strong>'+(cur?' <span style="font-size:11px;color:#34d399;margin-left:6px">চলমান</span>':'')+'</div>' +
+          '<div class="tabular" style="text-align:right"><div style="font-size:14px;font-weight:600">'+fmtMin(w.start,true)+'</div><div style="font-size:11px;color:var(--muted)">'+fmtMin(w.start)+' - '+fmtMin(w.end)+'</div></div></div>';
+      }).join('');
+
+      document.getElementById('sahriTime').textContent = fmtMin(sch.fajr, true);
+      document.getElementById('iftarTime').textContent = fmtMin(sch.maghrib, true);
+      let sLbl = 'ইফতারের বাকি', sRem = 0;
+      if (curSec < sch.fajr*60) { sLbl='সেহরির শেষ হতে বাকি'; sRem=sch.fajr*60 - curSec; }
+      else if (curSec < sch.maghrib*60) { sLbl='ইফতারের বাকি'; sRem=sch.maghrib*60 - curSec; }
+      else { sLbl='আগামী সেহরির বাকি'; sRem=86400 - curSec + sch.fajr*60; }
+      document.getElementById('sahriCdLbl').textContent = sLbl;
+      document.getElementById('sahriCdVal').textContent = fmtSec(sRem);
+
+      const rc = document.getElementById('ramadanCard');
+      if (h.month === 9) {
+        rc.innerHTML = '<div style="font-size:12px;color:#34d399;font-weight:600">পবিত্র রমজান মাস</div><div class="tabular" style="font-size:22px;font-weight:700;margin-top:4px">আজ রমজানের '+toBn(h.day)+' তারিখ</div><div style="font-size:12px;color:var(--muted);margin-top:4px">'+toBn(h.year)+' হিজরি</div>';
+      } else {
+        let days = 0, cur = new Date(cNow.getFullYear(), cNow.getMonth(), cNow.getDate());
+        while (days < 400) {
+          days++; cur.setDate(cur.getDate() + 1);
+          const nh = getHijri(cur);
+          if (nh.month === 9 && nh.day === 1) break;
+        }
+        rc.innerHTML = '<div class="ramadan-row"><div><div style="font-size:12px;color:#34d399;font-weight:600">আসন্ন রমজান কাউন্টডাউন</div><div class="tabular" style="font-size:20px;font-weight:700;margin-top:4px">রমজান আসতে আর '+toBn(days)+' দিন বাকি</div><div style="font-size:12px;color:var(--muted);margin-top:4px">সম্ভাব্য শুরু: '+fullDays[cur.getDay()]+', '+toBn(cur.getDate())+' '+monthsBn[cur.getMonth()]+' '+toBn(cur.getFullYear())+'</div></div><div class="ramadan-badge tabular"><span style="font-size:24px;font-weight:700;color:#34d399">'+toBn(days)+'</span><span style="font-size:11px;color:var(--muted)">দিন পর</span></div></div>';
+      }
+
+      updateCompass();
+    }
+
+    function openCityModal() {
+      document.getElementById('cityModal').classList.add('open');
+      document.getElementById('cityList').innerHTML = CITIES.map(c =>
+        '<button class="city-btn '+(c.id===prefs.city.id?'sel':'')+'" onclick="selectCity(\''+c.id+'\')"><span>'+c.nameBn+'</span><span>'+(c.id===prefs.city.id?'✓':'')+'</span></button>'
+      ).join('');
+    }
+    function closeCityModal() { document.getElementById('cityModal').classList.remove('open'); }
+    function selectCity(id) {
+      prefs.city = CITIES.find(c => c.id === id) || CITIES[0];
+      savePrefs(); closeCityModal(); render();
+    }
+    function useGps() {
+      if (!navigator.geolocation) return;
+      navigator.geolocation.getCurrentPosition(pos => {
+        prefs.city = { id:'gps', nameBn:'বর্তমান GPS', lat:pos.coords.latitude, lng:pos.coords.longitude, tz:-new Date().getTimezoneOffset()/60 };
+        savePrefs(); render();
+      });
+    }
+
+    // Render dial ticks
+    (function(){
+      let g = '';
+      for (let i=0;i<60;i++) {
+        const ang = i*6, card = ang%90===0, maj = ang%30===0;
+        const col = ang===0 ? '#ef4444' : card ? '#ffffff' : 'rgba(255,255,255,0.4)';
+        g += '<line x1="124" y1="'+(card?8:maj?10:13)+'" x2="124" y2="21" stroke="'+col+'" stroke-width="'+(card?2.4:maj?1.6:1)+'" transform="rotate('+ang+' 124 124)"/>';
+      }
+      document.getElementById('dialTicks').innerHTML = g;
+    })();
+
+    // Prioritize 3D AbsoluteOrientationSensor (device frame), then deviceorientationabsolute, with 1.6s relative-gyro fallback
+    let hasAbsLock = false, sensor3dWorking = false, absSensorInst = null, startedAt = Date.now();
+    function toggleCalBox() {
+      const el = document.getElementById('calBox');
+      el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    }
+    function alignNorthHere() { alignDirHere(0); }
+    function toggleMirror() {
+      mirrorEastWest = !mirrorEastWest;
+      prevRawHeading = null;
+      saveCompassCal();
+      updateCompass();
+    }
+    function resetCompassCal() {
+      calOffset = 0; mirrorEastWest = false; prevRawHeading = null;
+      saveCompassCal();
+      updateCompass();
+    }
+    function nudgeCal(deg) {
+      calOffset = ((calOffset + deg + 540) % 360) - 180;
+      prevRawHeading = null; saveCompassCal(); updateCompass();
+    }
+    function bindAbsoluteEvent(e) {
+      if (typeof e.webkitCompassHeading === 'number' && !isNaN(e.webkitCompassHeading) && e.webkitCompassHeading >= 0) {
+        hasAbsLock = true;
+        pushCompassHeading(e.webkitCompassHeading, 'iOS কম্পাস সংযুক্ত', false);
+        return;
+      }
+      if (typeof e.alpha !== 'number' || isNaN(e.alpha)) return;
+      const isAbs = e.type === 'deviceorientationabsolute' ? e.absolute !== false : e.absolute === true;
+      if (isAbs) {
+        if (sensor3dWorking) return;
+        hasAbsLock = true;
+        pushCompassHeading(headingFromEuler(e.alpha, e.beta, e.gamma), 'ব্রাউজার ম্যাগনেটিক কম্পাস সংযুক্ত', false);
+      } else if (!hasAbsLock && Date.now() - startedAt > 1600) {
+        pushCompassHeading(headingFromEuler(e.alpha, e.beta, e.gamma), 'জাইরো মোড (উপরের দিক সেট করুন)', true);
+      }
+    }
+
+    function startSensors() {
+      startedAt = Date.now();
+      if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function') {
+        document.getElementById('iosPermBtn').style.display = 'block';
+        return;
+      }
+      if ('AbsoluteOrientationSensor' in window) {
+        let screenFrame = false;
+        try {
+          try { absSensorInst = new AbsoluteOrientationSensor({ frequency: 30, referenceFrame: 'device' }); }
+          catch(err) { screenFrame = true; absSensorInst = new AbsoluteOrientationSensor({ frequency: 30, referenceFrame: 'screen' }); }
+          absSensorInst.addEventListener('reading', () => {
+            let deg = null;
+            const extra = screenFrame ? 0 : getScreenAng();
+            if (typeof absSensorInst.populateMatrix === 'function') {
+              const m = new Float32Array(16);
+              absSensorInst.populateMatrix(m);
+              if (Math.hypot(m[4], m[5]) > 0.15) deg = ((Math.atan2(m[4], m[5])*R2D) + extra + 360) % 360;
+              else { const s = m[6] >= 0 ? -1 : 1; deg = ((Math.atan2(s*m[8], s*m[9])*R2D) + extra + 360) % 360; }
+            } else if (absSensorInst.quaternion) {
+              const [qx, qy, qz, qw] = absSensorInst.quaternion;
+              deg = headingFromQuat(qx, qy, qz, qw, screenFrame);
+            }
+            if (deg === null) return;
+            sensor3dWorking = true; hasAbsLock = true;
+            pushCompassHeading(deg, '৩ডি ম্যাগনেটিক কম্পাস চালু আছে', false);
+          });
+          absSensorInst.addEventListener('error', () => { sensor3dWorking = false; });
+          absSensorInst.start();
+        } catch(e) { sensor3dWorking = false; }
+      }
+      window.addEventListener('deviceorientationabsolute', bindAbsoluteEvent, true);
+      window.addEventListener('deviceorientation', bindAbsoluteEvent, true);
+    }
+    function restartCompass() {
+      sensorHeading = null; prevRawHeading = null; cumulativeDial = 0; smoothVec = null; hasAbsLock = false; sensor3dWorking = false; gyroMode = false; gyroCalibrated = false;
+      try { absSensorInst && absSensorInst.stop(); } catch(e) {}
+      window.removeEventListener('deviceorientationabsolute', bindAbsoluteEvent, true);
+      window.removeEventListener('deviceorientation', bindAbsoluteEvent, true);
+      startSensors();
+      updateCompass();
+    }
+    function requestIosCompass() {
+      DeviceOrientationEvent.requestPermission().then(res => {
+        if (res === 'granted') {
+          document.getElementById('iosPermBtn').style.display = 'none';
+          window.addEventListener('deviceorientation', bindAbsoluteEvent, true);
+        }
+      });
+    }
+
+    // Tasbih Counter State
+    const ZIKRS = [
+      { id:'subhanallah', title:'সুবহানাল্লাহ', ar:'سُبْحَانَ ٱللَّٰهِ' },
+      { id:'alhamdulillah', title:'আলহামদুলিল্লাহ', ar:'ٱلْحَمْدُ لِلَّٰهِ' },
+      { id:'allahuakbar', title:'আল্লাহু আকবার', ar:'ٱللَّٰهُ أَكْبَرُ' },
+      { id:'istighfar', title:'আস্তাগফিরুল্লাহ', ar:'أَسْتَغْفِرُ ٱللَّٰهَ' },
+      { id:'tahlil', title:'লা ইলাহা ইল্লাল্লাহ', ar:'لَا إِلَٰهَ إِلَّا ٱللَّٰهُ' }
+    ];
+    let tasbih = JSON.parse(localStorage.getItem('md_tasbih_v1') || 'null') || { id:'subhanallah', count:0, rounds:0, total:0, target:33 };
+    function saveTasbih() { localStorage.setItem('md_tasbih_v1', JSON.stringify(tasbih)); }
+    function setZikr(id) { tasbih.id = id; tasbih.count = 0; saveTasbih(); renderTasbih(); }
+    function setTasbihTarget(t) { tasbih.target = t; tasbih.count = 0; saveTasbih(); renderTasbih(); }
+    function tapTasbih() {
+      tasbih.count++; tasbih.total++;
+      if (tasbih.target > 0 && tasbih.count >= tasbih.target) {
+        tasbih.count = 0; tasbih.rounds++;
+        if (navigator.vibrate) navigator.vibrate([35,35,70]);
+      } else if (navigator.vibrate) navigator.vibrate(15);
+      saveTasbih(); renderTasbih();
+    }
+    function resetTasbih() { tasbih.count = 0; tasbih.rounds = 0; saveTasbih(); renderTasbih(); }
+    function clearTasbihAll() { tasbih.count = 0; tasbih.rounds = 0; tasbih.total = 0; saveTasbih(); renderTasbih(); }
+    function renderTasbih() {
+      const z = ZIKRS.find(x => x.id === tasbih.id) || ZIKRS[0];
+      document.getElementById('tasbihArabic').textContent = z.ar;
+      document.getElementById('tasbihTitle').textContent = z.title;
+      document.getElementById('tasbihCount').textContent = toBn(tasbih.count);
+      document.getElementById('tasbihTargetLbl').textContent = tasbih.target > 0 ? '/ ' + toBn(tasbih.target) : 'ট্যাপ করুন';
+      document.getElementById('tasbihRounds').textContent = toBn(tasbih.rounds);
+      document.getElementById('tasbihTotal').textContent = toBn(tasbih.total);
+      const prog = tasbih.target > 0 ? Math.min(1, tasbih.count / tasbih.target) : 1;
+      document.getElementById('tasbihRing').setAttribute('stroke-dashoffset', String(389.56 * (1 - prog)));
+      document.getElementById('tasbihTargets').innerHTML = [33,99,100,0].map(t =>
+        '<button class="loc-btn" style="padding:4px 8px;font-size:11px;'+(tasbih.target===t?'background:var(--emerald);border-color:var(--emerald)':'')+'" onclick="setTasbihTarget('+t+')">'+(t===0?'∞':toBn(t))+'</button>'
+      ).join('');
+      document.getElementById('tasbihPresets').innerHTML = ZIKRS.map(item =>
+        '<button class="loc-btn" style="padding:5px 9px;font-size:11px;'+(tasbih.id===item.id?'background:var(--emerald-soft);border-color:rgba(0,168,107,0.45);color:#34d399':'')+'" onclick="setZikr(\''+item.id+'\')">'+item.title+'</button>'
+      ).join('');
+    }
+
+    startSensors();
+    renderTasbih();
+    render();
+    setInterval(render, 1000);
+  </script>
+</body>
+</html>
