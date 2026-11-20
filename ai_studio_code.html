@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>মুসলিমস ডে — নামাজ ও আমল সঙ্গী</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0b1011;
+      --surface: #141a1b;
+      --surface-2: #192122;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f1f5f4;
+      --muted: #93a3a1;
+      --emerald: #00a86b;
+      --emerald-soft: rgba(0, 168, 107, 0.14);
+      --teal-top: #0d4b5a;
+      --teal-mid: #126170;
+      --crimson: #e05252;
+      --crimson-bg: rgba(145, 42, 42, 0.24);
+      --amber: #e59a28;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans Bengali', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    .font-arabic { font-family: 'Amiri', serif; }
+    .tabular { font-variant-numeric: tabular-nums; }
+    .app-shell {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 0 40px;
+    }
+    @media (min-width: 960px) {
+      .app-shell { padding: 20px 24px 48px; }
+      .desktop-grid {
+        display: grid;
+        grid-template-columns: 5fr 7fr;
+        gap: 20px;
+        align-items: start;
+      }
+    }
+    .hero-card {
+      background: linear-gradient(180deg, var(--teal-top) 0%, var(--teal-mid) 52%, #0e2427 100%);
+      padding: 18px 18px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    @media (min-width: 960px) {
+      .hero-card { border-radius: 24px; border: 1px solid var(--border); }
+    }
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .date-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+    }
+    .date-hijri { font-size: 14px; font-weight: 600; }
+    .date-greg { font-size: 13px; color: rgba(255,255,255,0.78); }
+    .icon-actions { display: flex; gap: 8px; }
+    .circle-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(0,0,0,0.22);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .arc-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 6px 0 8px;
+    }
+    .arc-box {
+      position: relative;
+      width: 240px;
+      height: 132px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    .arc-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 240px;
+      height: 132px;
+    }
+    .arc-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding-bottom: 4px;
+    }
+    .arc-waqt { font-size: 24px; font-weight: 700; }
+    .arc-sub { font-size: 13px; color: rgba(255,255,255,0.8); margin-top: 2px; }
+    .arc-timer { font-size: 30px; font-weight: 700; letter-spacing: 0.04em; margin-top: 2px; }
+    .meta-strip {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .loc-btn {
+      background: rgba(255,255,255,0.16);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .sun-info {
+      background: rgba(255,255,255,0.12);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.92);
+    }
+    .card {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin-top: 10px;
+    }
+    @media (min-width: 960px) {
+      .card {
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        margin-top: 0;
+      }
+      .stack-col { display: flex; flex-direction: column; gap: 16px; }
+    }
+    .waqt-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 18px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .waqt-row:hover { background: rgba(255,255,255,0.03); }
+    .waqt-row.active { background: rgba(255,255,255,0.06); }
+    .waqt-left { display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 15px; }
+    .waqt-right { display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--muted); }
+    .waqt-row.active .waqt-right { color: #fff; font-weight: 600; }
+    .check-circle {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      border: 2px solid #4f5f5d;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #fff;
+    }
+    .check-circle.done { background: var(--emerald); border-color: var(--emerald); }
+    .dot-amber {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--amber);
+      display: inline-block;
+    }
+    .split-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    .split-btn {
+      padding: 13px;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .split-btn:first-child { border-right: 1px solid var(--border); }
+    .section-pad { padding: 18px; }
+    .amal-kicker { font-size: 13px; color: var(--emerald); font-weight: 600; margin-bottom: 6px; }
+    .amal-title { font-size: 22px; font-weight: 700; line-height: 1.3; }
+    .amal-sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
+    .amal-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin: 18px 0;
+    }
+    .amal-item {
+      background: transparent;
+      border: none;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      padding: 4px 0;
+    }
+    .amal-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 999px;
+      background: var(--emerald-soft);
+      border: 1px solid rgba(0,168,107,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .amal-item.done .amal-circle {
+      background: var(--emerald);
+      color: #fff;
+    }
+    .amal-name { font-size: 12px; font-weight: 500; }
+    .amal-count { font-size: 11px; color: var(--muted); }
+    .cta-btn {
+      width: 100%;
+      padding: 13px 18px;
+      border-radius: 14px;
+      border: none;
+      background: var(--emerald);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .feature-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .feature-title { font-size: 16px; font-weight: 700; }
+    .link-btn {
+      background: none;
+      border: none;
+      color: var(--emerald);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px 8px;
+    }
+    .feat-btn {
+      background: transparent;
+      border: none;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .feat-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 999px;
+      background: var(--emerald-soft);
+      border: 1px solid rgba(0,168,107,0.28);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: #4ade80;
+    }
+    .feat-label { font-size: 12px; color: #dbe5e3; }
+    .forbidden-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .forbidden-box {
+      background: var(--crimson-bg);
+      border: 1px solid rgba(224, 82, 82, 0.25);
+      border-radius: 12px;
+      padding: 12px 8px;
+      text-align: center;
+    }
+    .forbidden-name { font-size: 13px; color: #f8b4b4; font-weight: 600; }
+    .forbidden-time { font-size: 12px; color: #fecaca; margin-top: 4px; font-weight: 600; }
+    .nafl-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .nafl-row:last-child { border-bottom: none; }
+    .sahri-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      text-align: center;
+      padding: 14px 10px;
+      background: linear-gradient(180deg, #161d1e 0%, #10261d 100%);
+    }
+    .sahri-val { font-size: 18px; font-weight: 700; }
+    .sahri-lbl { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.72);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 50;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-panel {
+      background: #161d1e;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 480px;
+      max-height: 84vh;
+      overflow-y: auto;
+      padding: 20px;
+    }
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .close-btn {
+      background: rgba(255,255,255,0.08);
+      border: none;
+      color: #fff;
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .city-opt {
+      width: 100%;
+      text-align: left;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #1c2426;
+      color: #fff;
+      margin-bottom: 8px;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      justify-content: space-between;
+    }
+    .city-opt.selected { border-color: var(--emerald); background: var(--emerald-soft); }
+    .tasbih-circle {
+      width: 160px;
+      height: 160px;
+      border-radius: 999px;
+      border: 4px solid var(--emerald);
+      background: var(--emerald-soft);
+      color: #fff;
+      font-size: 38px;
+      font-weight: 700;
+      margin: 18px auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="desktop-grid">
+      <div class="stack-col">
+        <section class="hero-card">
+          <div class="top-bar">
+            <button class="date-btn" onclick="openModal('calendar')">
+              <span style="font-size:20px">📅</span>
+              <div>
+                <div class="date-hijri" id="hijriDate">--</div>
+                <div class="date-greg" id="gregDate">--</div>
+              </div>
+            </button>
+            <div class="icon-actions">
+              <button class="circle-btn" onclick="openModal('tasbih')" title="তাসবিহ">📿</button>
+              <button class="circle-btn" onclick="openModal('location')" title="লোকেশন">📍</button>
+            </div>
+          </div>
+
+          <div class="arc-wrap">
+            <div class="arc-box">
+              <svg class="arc-svg" viewBox="0 0 240 132">
+                <path d="M 24 120 A 96 96 0 0 1 216 120" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="11" stroke-linecap="round"/>
+                <path id="arcProgress" d="M 24 120 A 96 96 0 0 1 216 120" fill="none" stroke="#ffffff" stroke-width="11" stroke-linecap="round" stroke-dasharray="301.6" stroke-dashoffset="150"/>
+              </svg>
+              <div class="arc-content">
+                <div class="arc-waqt" id="activeWaqtName">ফজর</div>
+                <div class="arc-sub" id="activeWaqtSub">শেষ হতে বাকি</div>
+                <div class="arc-timer tabular" id="activeWaqtTimer">০০:০০:০০</div>
+              </div>
+            </div>
+            <div class="meta-strip">
+              <button class="loc-btn" onclick="openModal('location')" id="cityBtn">ঢাকা ▾</button>
+              <div class="sun-info tabular" id="sunInfo">সূর্যোদয়: --:-- | সূর্যাস্ত: --:--</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" id="waqtListCard"></section>
+
+        <section class="card sahri-bar">
+          <div>
+            <div class="sahri-val tabular" id="sahriTime">--:--</div>
+            <div class="sahri-lbl">পরবর্তী সাহরি</div>
+          </div>
+          <div>
+            <div class="sahri-val tabular" id="iftarTime">--:--</div>
+            <div class="sahri-lbl">পরবর্তী ইফতার</div>
+          </div>
+          <div>
+            <div class="sahri-val tabular" id="sahriCountdown">--:--:--</div>
+            <div class="sahri-lbl" id="sahriCountdownLabel">ইফতারের বাকি</div>
+          </div>
+        </section>
+      </div>
+
+      <div class="stack-col">
+        <section class="card section-pad">
+          <div class="amal-kicker" id="amalKicker">আজকের আমল · ০/৫</div>
+          <h2 class="amal-title">হোক অল্প আমল, কিন্তু নিয়মিত</h2>
+          <p class="amal-sub">আল্লাহর সাথে সম্পর্ক হোক আরেকটু গভীর।</p>
+          <div class="amal-grid" id="amalGrid"></div>
+          <button class="cta-btn" onclick="openModal('quran')">কুরআন দিয়ে শুরু করি →</button>
+        </section>
+
+        <section class="card section-pad">
+          <div class="feature-header">
+            <div class="feature-title">টপ ফিচার</div>
+            <button class="link-btn" onclick="openModal('names')">৯৯ নাম দেখুন</button>
+          </div>
+          <div class="features-grid">
+            <button class="feat-btn" onclick="openModal('tracker')">
+              <div class="feat-icon tabular" id="trackerPct">০%</div>
+              <span class="feat-label">ট্র্যাকার</span>
+            </button>
+            <button class="feat-btn" onclick="openModal('quran')">
+              <div class="feat-icon">📖</div>
+              <span class="feat-label">কুরআন</span>
+            </button>
+            <button class="feat-btn" onclick="openModal('qibla')">
+              <div class="feat-icon">🧭</div>
+              <span class="feat-label">কিবলা</span>
+            </button>
+            <button class="feat-btn" onclick="openModal('ruqyah')">
+              <div class="feat-icon">🤲</div>
+              <span class="feat-label">রুকইয়াহ</span>
+            </button>
+            <button class="feat-btn" onclick="openModal('hadith')">
+              <div class="feat-icon">📜</div>
+              <span class="feat-label">হাদিস</span>
+            </button>
+            <button class="feat-btn" onclick="openModal('quran')">
+              <div class="feat-icon">📚</div>
+              <span class="feat-label">তাফসীর</span>
+            </button>
+            <button class="feat-btn" onclick="openModal('names')">
+              <div class="feat-icon font-arabic">الله</div>
+              <span class="feat-label">৯৯ নাম</span>
+            </button>
+            <button class="feat-btn" onclick="openModal('tasbih')">
+              <div class="feat-icon">📿</div>
+              <span class="feat-label">তাসবিহ</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="card section-pad">
+          <div class="feature-header">
+            <div class="feature-title" style="color:var(--crimson)">সালাতের নিষিদ্ধ সময়</div>
+            <button class="link-btn" onclick="openModal('ref')">রেফারেন্স দেখুন</button>
+          </div>
+          <p style="font-size:12px;color:var(--muted)">এই সময়গুলোতে সালাত আদায় নিষিদ্ধ (ব্যতিক্রম: সূর্যাস্তকালীন একই দিনের আসর সালাত)</p>
+          <div class="forbidden-grid" id="forbiddenGrid"></div>
+        </section>
+
+        <section class="card section-pad">
+          <div class="feature-header">
+            <div class="feature-title">নফল সালাতের সময়</div>
+            <button class="link-btn" onclick="openModal('ref')">রেফারেন্স দেখুন</button>
+          </div>
+          <div id="naflList"></div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop" onclick="if(event.target===this) closeModal()">
+    <div class="modal-panel">
+      <div class="modal-head">
+        <h3 id="modalTitle" style="font-size:18px;font-weight:700"></h3>
+        <button class="close-btn" onclick="closeModal()">✕</button>
+      </div>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <script>
+    const BN = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+    const toBn = s => String(s).replace(/\d/g, d => BN[d]);
+    const pad2 = n => toBn(String(Math.floor(n)).padStart(2,'0'));
+    const fmtMin = m => {
+      const n = ((Math.round(m) % 1440) + 1440) % 1440;
+      const h = Math.floor(n / 60), min = n % 60;
+      return pad2(h % 12 || 12) + ':' + pad2(min);
+    };
+    const fmtSec = s => {
+      const x = Math.max(0, Math.floor(s));
+      return pad2(Math.floor(x / 3600)) + ':' + pad2(Math.floor((x % 3600) / 60)) + ':' + pad2(x % 60);
+    };
+
+    const CITIES = [
+      { id:'dhaka', nameBn:'ঢাকা', lat:23.8103, lng:90.4125, tz:6 },
+      { id:'chattogram', nameBn:'চট্টগ্রাম', lat:22.3569, lng:91.7832, tz:6 },
+      { id:'sylhet', nameBn:'সিলেট', lat:24.8949, lng:91.8687, tz:6 },
+      { id:'rajshahi', nameBn:'রাজশাহী', lat:24.3745, lng:88.6042, tz:6 },
+      { id:'khulna', nameBn:'খুলনা', lat:22.8456, lng:89.5403, tz:6 },
+      { id:'singapore', nameBn:'Singapore', lat:1.3521, lng:103.8198, tz:8 },
+      { id:'kolkata', nameBn:'কলকাতা', lat:22.5726, lng:88.3639, tz:5.5 },
+      { id:'makkah', nameBn:'মক্কা', lat:21.4225, lng:39.8262, tz:3 }
+    ];
+
+    let state = JSON.parse(localStorage.getItem('muslims_day_standalone') || 'null') || {
+      cityId: 'dhaka',
+      prayersDone: {},
+      amal: { quran:0, hadith:0, durood:0, istighfar:0, dhikr:0 },
+      tasbih: 0
+    };
+    function saveState() { localStorage.setItem('muslims_day_standalone', JSON.stringify(state)); }
+
+    const D2R = Math.PI / 180, R2D = 180 / Math.PI;
+    function calcSchedule(date, city) {
+      let y = date.getFullYear(), m = date.getMonth() + 1, d = date.getDate();
+      if (m <= 2) { y--; m += 12; }
+      const A = Math.floor(y/100), B = 2 - A + Math.floor(A/4);
+      const jd = Math.floor(365.25*(y+4716)) + Math.floor(30.6001*(m+1)) + d + B - 1524.5 - city.lng/360;
+      const D = jd - 2451545;
+      const g = (357.529 + 0.98560028 * D) % 360;
+      const q = (280.459 + 0.98564736 * D) % 360;
+      const L = (q + 1.915 * Math.sin(g*D2R) + 0.02 * Math.sin(2*g*D2R)) % 360;
+      const e = 23.439 - 0.00000036 * D;
+      const RA = Math.atan2(Math.cos(e*D2R)*Math.sin(L*D2R), Math.cos(L*D2R))*R2D/15;
+      let eq = q/15 - ((RA%24)+24)%24;
+      if (eq > 12) eq -= 24; if (eq < -12) eq += 24;
+      const decl = Math.asin(Math.sin(e*D2R)*Math.sin(L*D2R))*R2D;
+      const noon = 12 + city.tz - city.lng/15 - eq;
+      const angleTime = (ang, dir) => {
+        const term = (-Math.sin(ang*D2R) - Math.sin(city.lat*D2R)*Math.sin(decl*D2R)) / (Math.cos(city.lat*D2R)*Math.cos(decl*D2R));
+        const t = Math.acos(Math.max(-1, Math.min(1, term))) * R2D / 15;
+        return dir === 'ccw' ? noon - t : noon + t;
+      };
+      const toMin = h => Math.round((((h % 24) + 24) % 24) * 60);
+      const fajr = toMin(angleTime(18, 'ccw'));
+      const sunrise = toMin(angleTime(0.833, 'ccw'));
+      const dhuhr = toMin(noon) + 1;
+      const asrAng = -Math.atan(1 / (2 + Math.tan(Math.abs(city.lat - decl)*D2R))) * R2D;
+      const asr = toMin(angleTime(asrAng, 'cw'));
+      const maghrib = toMin(angleTime(0.833, 'cw'));
+      const isha = toMin(angleTime(18, 'cw'));
+      const nightMin = (fajr + 1440 - maghrib) % 1440;
+      const lastThird = (maghrib + Math.round(nightMin * 2 / 3)) % 1440;
+      return { fajr, sunrise, dhuhr, asr, maghrib, isha, lastThird, isFriday: date.getDay() === 5 };
+    }
+
+    function render() {
+      const now = new Date();
+      const city = CITIES.find(c => c.id === state.cityId) || CITIES[0];
+      const utcMs = now.getTime() + now.getTimezoneOffset() * 60000;
+      const cNow = new Date(utcMs + city.tz * 3600000);
+      const daysBn = ['রবি','সোম','মঙ্গল','বুধ','বৃহঃ','শুক্র','শনি'];
+      const monthsBn = ['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
+      document.getElementById('gregDate').textContent = toBn(cNow.getDate()) + ' ' + monthsBn[cNow.getMonth()];
+      try {
+        const hParts = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', { day:'numeric', month:'numeric' }).formatToParts(cNow);
+        const hm = ['মুহররম','সফর','রবিউল আউয়াল','রবিউস সানি','জুমাদাল উলা','জুমাদাল আখিরাহ','রজব','শাবান','রমজান','শাওয়াল','জিলকদ','জিলহজ'];
+        const hd = Number(hParts.find(p => p.type==='day').value);
+        const hmn = Number(hParts.find(p => p.type==='month').value);
+        document.getElementById('hijriDate').textContent = daysBn[cNow.getDay()] + ', ' + toBn(hd) + ' ' + hm[(hmn-1)%12];
+      } catch(e) {
+        document.getElementById('hijriDate').textContent = daysBn[cNow.getDay()];
+      }
+
+      const sch = calcSchedule(cNow, city);
+      document.getElementById('cityBtn').textContent = city.nameBn + ' ▾';
+      document.getElementById('sunInfo').textContent = 'সূর্যোদয়: ' + fmtMin(sch.sunrise) + ' | সূর্যাস্ত: ' + fmtMin(sch.maghrib);
+
+      const waqts = [
+        { id:'fajr', name:'ফজর', start:sch.fajr, end:sch.sunrise-1 },
+        { id:'dhuhr', name:sch.isFriday ? 'জুমআ' : 'জোহর', start:sch.dhuhr, end:sch.asr-1 },
+        { id:'asr', name:'আসর', start:sch.asr, end:sch.maghrib-1 },
+        { id:'maghrib', name:'মাগরিব', start:sch.maghrib, end:sch.isha-1 },
+        { id:'isha', name:'ইশা', start:sch.isha, end:sch.fajr }
+      ];
+
+      const curSec = cNow.getHours()*3600 + cNow.getMinutes()*60 + cNow.getSeconds();
+      let activeId = 'isha', label = 'ইশা', sub = 'শেষ হতে বাকি', rem = 0, prog = 0.5;
+      let found = false;
+      for (let i=0; i<4; i++) {
+        if (curSec >= waqts[i].start*60 && curSec <= waqts[i].end*60) {
+          activeId = waqts[i].id; label = waqts[i].name; sub = 'শেষ হতে বাকি';
+          rem = waqts[i].end*60 - curSec;
+          prog = (curSec - waqts[i].start*60) / Math.max(1, (waqts[i].end - waqts[i].start)*60);
+          found = true; break;
+        }
+      }
+      if (!found) {
+        if (curSec >= sch.isha*60 || curSec < sch.fajr*60) {
+          activeId = 'isha'; label = 'ইশা'; sub = 'শেষ হতে বাকি';
+          const tot = ((sch.fajr + 1440 - sch.isha) % 1440) * 60;
+          const el = curSec >= sch.isha*60 ? curSec - sch.isha*60 : curSec + 86400 - sch.isha*60;
+          rem = Math.max(0, tot - el); prog = el / Math.max(1, tot);
+        } else {
+          activeId = 'dhuhr'; label = waqts[1].name; sub = 'শুরু হতে বাকি';
+          rem = sch.dhuhr*60 - curSec;
+          prog = (curSec - sch.sunrise*60) / Math.max(1, (sch.dhuhr - sch.sunrise)*60);
+        }
+      }
+
+      document.getElementById('activeWaqtName').textContent = label;
+      document.getElementById('activeWaqtSub').textContent = sub;
+      document.getElementById('activeWaqtTimer').textContent = fmtSec(rem);
+      document.getElementById('arcProgress').setAttribute('stroke-dashoffset', String(301.6 * (1 - prog)));
+
+      let doneCount = 0;
+      const waqtHtml = waqts.map(w => {
+        const isDone = !!state.prayersDone[w.id];
+        if (isDone) doneCount++;
+        const isCur = w.id === activeId;
+        return '<div class="waqt-row '+(isCur?'active':'')+'" onclick="togglePrayer(\''+w.id+'\')">' +
+          '<div class="waqt-left"><span>'+w.name+'</span></div>' +
+          '<div class="waqt-right tabular">' + (isCur?'<span class="dot-amber"></span>':'') +
+          '<span>'+fmtMin(w.start)+' - '+fmtMin(w.end)+'</span>' +
+          '<span class="check-circle '+(isDone?'done':'')+'">'+(isDone?'✓':'')+'</span></div></div>';
+      }).join('') + '<div class="split-actions"><button class="split-btn" onclick="openModal(\'tasbih\')">📿 তাসবিহ</button><button class="split-btn" onclick="openModal(\'qibla\')">🧭 কিবলা</button></div>';
+      document.getElementById('waqtListCard').innerHTML = waqtHtml;
+      document.getElementById('trackerPct').textContent = toBn(Math.round((doneCount/5)*100)) + '%';
+
+      document.getElementById('sahriTime').textContent = fmtMin(sch.fajr);
+      document.getElementById('iftarTime').textContent = fmtMin(sch.maghrib);
+      let sLbl = 'ইফতারের বাকি', sRem = 0;
+      if (curSec < sch.fajr*60) { sLbl = 'সাহরির বাকি'; sRem = sch.fajr*60 - curSec; }
+      else if (curSec < sch.maghrib*60) { sLbl = 'ইফতারের বাকি'; sRem = sch.maghrib*60 - curSec; }
+      else { sLbl = 'সাহরির বাকি'; sRem = 86400 - curSec + sch.fajr*60; }
+      document.getElementById('sahriCountdownLabel').textContent = sLbl;
+      document.getElementById('sahriCountdown').textContent = fmtSec(sRem);
+
+      const amalDefs = [
+        { k:'quran', name:'কুরআন', target:5, icon:'📖' },
+        { k:'hadith', name:'হাদিস', target:1, icon:'📜' },
+        { k:'durood', name:'দরুদ', target:10, icon:'💚' },
+        { k:'istighfar', name:'ইস্তেগফার', target:100, icon:'🌿' },
+        { k:'dhikr', name:'যিকির', target:33, icon:'✨' }
+      ];
+      let amalDone = 0;
+      document.getElementById('amalGrid').innerHTML = amalDefs.map(a => {
+        const val = state.amal[a.k] || 0;
+        const done = val >= a.target;
+        if (done) amalDone++;
+        return '<button class="amal-item '+(done?'done':'')+'" onclick="incAmal(\''+a.k+'\','+a.target+')">' +
+          '<div class="amal-circle">'+a.icon+'</div>' +
+          '<span class="amal-name">'+a.name+'</span>' +
+          '<span class="amal-count tabular">'+toBn(val)+'/'+toBn(a.target)+'</span></button>';
+      }).join('');
+      document.getElementById('amalKicker').textContent = 'আজকের আমল · ' + toBn(amalDone) + '/৫';
+
+      document.getElementById('forbiddenGrid').innerHTML =
+        '<div class="forbidden-box"><div class="forbidden-name">সকাল</div><div class="forbidden-time tabular">'+fmtMin(sch.sunrise)+' - '+fmtMin(sch.sunrise+15)+'</div></div>' +
+        '<div class="forbidden-box"><div class="forbidden-name">দুপুর</div><div class="forbidden-time tabular">'+fmtMin(sch.dhuhr-7)+' - '+fmtMin(sch.dhuhr-1)+'</div></div>' +
+        '<div class="forbidden-box"><div class="forbidden-name">সন্ধ্যা</div><div class="forbidden-time tabular">'+fmtMin(sch.maghrib-15)+' - '+fmtMin(sch.maghrib-1)+'</div></div>';
+
+      document.getElementById('naflList').innerHTML =
+        '<div class="nafl-row"><span>☀️ দুহা</span><span class="tabular" style="color:var(--muted)">'+fmtMin(sch.sunrise+16)+' - '+fmtMin(sch.dhuhr-8)+'</span></div>' +
+        '<div class="nafl-row"><span>🕌 জাওয়াল শুরু</span><span class="tabular" style="color:var(--muted)">'+fmtMin(sch.dhuhr)+'</span></div>' +
+        '<div class="nafl-row"><span>🌙 আওয়াবিন</span><span class="tabular" style="color:var(--muted)">মাগরিবের পর - '+fmtMin(sch.isha-1)+'</span></div>' +
+        '<div class="nafl-row"><div><div>✨ তাহাজ্জুদ</div><div style="font-size:11px;color:var(--emerald)">রাতের শেষ ১/৩ শুরু: '+fmtMin(sch.lastThird)+'</div></div><span class="tabular" style="color:var(--muted)">ইশার পর - '+fmtMin(sch.fajr)+'</span></div>';
+    }
+
+    function togglePrayer(id) {
+      state.prayersDone[id] = !state.prayersDone[id];
+      saveState(); render();
+    }
+    function incAmal(k, target) {
+      state.amal[k] = ((state.amal[k] || 0) >= target) ? 0 : (state.amal[k] || 0) + 1;
+      saveState(); render();
+    }
+    function selectCity(id) {
+      state.cityId = id; saveState(); closeModal(); render();
+    }
+    function openModal(type) {
+      const mb = document.getElementById('modalBackdrop');
+      const mt = document.getElementById('modalTitle');
+      const body = document.getElementById('modalBody');
+      mb.classList.add('open');
+      const city = CITIES.find(c => c.id === state.cityId) || CITIES[0];
+      if (type === 'location') {
+        mt.textContent = 'শহর নির্বাচন করুন';
+        body.innerHTML = CITIES.map(c => '<button class="city-opt '+(c.id===city.id?'selected':'')+'" onclick="selectCity(\''+c.id+'\')"><span>'+c.nameBn+'</span><span>'+(c.id===city.id?'নির্বাচিত':'')+'</span></button>').join('');
+      } else if (type === 'tasbih') {
+        mt.textContent = 'ডিজিটাল তাসবিহ';
+        body.innerHTML = '<div style="text-align:center"><p style="color:var(--muted);font-size:13px">সুবহানাল্লাহ · আলহামদুলিল্লাহ · আল্লাহু আকবার</p>' +
+          '<button class="tasbih-circle tabular" id="tasbihBtn" onclick="state.tasbih++;saveState();this.querySelector(\'span\').textContent=toBn(state.tasbih)"><span>'+toBn(state.tasbih)+'</span><small style="font-size:12px;color:var(--muted)">ট্যাপ করুন</small></button>' +
+          '<button class="link-btn" onclick="state.tasbih=0;saveState();openModal(\'tasbih\')">রিসেট করুন</button></div>';
+      } else if (type === 'qibla') {
+        mt.textContent = 'কিবলা দিকনির্দেশনা (' + city.nameBn + ')';
+        const kLat = 21.4225*D2R, kLng = 39.8262*D2R, phi = city.lat*D2R, lam = city.lng*D2R;
+        const deg = Math.round(((Math.atan2(Math.sin(kLng-lam)*Math.cos(kLat), Math.cos(phi)*Math.sin(kLat)-Math.sin(phi)*Math.cos(kLat)*Math.cos(kLng-lam))*R2D)+360)%360);
+        body.innerHTML = '<div style="text-align:center;padding:12px 0"><div style="font-size:48px;transform:rotate('+deg+'deg);display:inline-block">🧭</div><p style="font-size:20px;font-weight:700;margin-top:10px" class="tabular">কিবলা কোণ: '+toBn(deg)+'°</p><p style="font-size:13px;color:var(--muted);margin-top:4px">উত্তর দিক থেকে ঘড়ির কাঁটার দিকে '+toBn(deg)+' ডিগ্রি</p></div>';
+      } else if (type === 'quran') {
+        mt.textContent = 'সূরা আল-ফাতিহা ও তাফসীর';
+        body.innerHTML = '<div class="font-arabic" style="font-size:22px;text-align:right;line-height:2;color:#a7f3d0">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ۝ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ ۝ الرَّحْمَٰنِ الرَّحِيمِ ۝ مَالِكِ يَوْمِ الدِّينِ ۝ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ۝ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ</div><p style="margin-top:12px;font-size:14px;color:#d1dbd9">তাফসীর: সূরা ফাতিহা হলো কুরআনের সারসংক্ষেপ। এতে আল্লাহর প্রশংসা, একত্ববাদ ও সরল পথের দোয়া রয়েছে।</p>';
+      } else if (type === 'hadith') {
+        mt.textContent = 'আজকের হাদিস';
+        body.innerHTML = '<p style="font-size:15px;line-height:1.7">রাসূলুল্লাহ (সা.) বলেছেন: আল্লাহর নিকট সর্বাধিক প্রিয় আমল হলো তা, যা নিয়মিত করা হয়—যদিও তা পরিমাণে অল্প হয়।</p><p style="margin-top:8px;font-size:12px;color:var(--emerald)">সূত্র: সহীহ বুখারী ৬৪৬৪, সহীহ মুসলিম ৭৮৩</p>';
+      } else if (type === 'names') {
+        mt.textContent = 'আসমাউল হুসনা (সংক্ষিপ্ত)';
+        const list = [['الرَّحْمَنُ','আর-রাহমান','পরম করুণাময়'],['الرَّحِيمُ','আর-রাহীম','অসীম দয়ালু'],['الْمَلِكُ','আল-মালিক','সর্বময় অধিপতি'],['الْقُدُّوسُ','আল-কুদ্দুস','মহাপবিত্র'],['السَّلَامُ','আস-সালাম','শান্তির উৎস'],['الْغَفَّارُ','আল-গাফফার','অত্যন্ত ক্ষমাশীল'],['الرَّزَّاقُ','আর-রাযযাক','রিযিকদাতা'],['الْحَكِيمُ','আল-হাকীম','প্রজ্ঞাময়']];
+        body.innerHTML = list.map(n => '<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)"><div><strong>'+n[1]+'</strong><div style="font-size:12px;color:var(--muted)">'+n[2]+'</div></div><div class="font-arabic" style="font-size:22px;color:#4ade80">'+n[0]+'</div></div>').join('');
+      } else if (type === 'ruqyah') {
+        mt.textContent = 'রুকইয়াহ ও হেফাজতের দোয়া';
+        body.innerHTML = '<div class="font-arabic" style="font-size:22px;text-align:right;color:#a7f3d0">أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ</div><p style="margin-top:8px;font-size:14px">উচ্চারণ: আঊযু বিকালিমাতিল্লাহিত তাম্মাতি মিন শাররি মা খালাক্ব। (সহীহ মুসলিম: ২৭০৮)</p>';
+      } else if (type === 'ref') {
+        mt.textContent = 'সালাতের সময়সূচির রেফারেন্স';
+        body.innerHTML = '<p style="font-size:14px;line-height:1.7"><strong>নিষিদ্ধ সময় (সহীহ মুসলিম ৮৩১):</strong> সূর্যোদয়, ঠিক দ্বিপ্রহর ও সূর্যাস্তের সময় সালাত আদায় নিষিদ্ধ।</p><p style="font-size:14px;line-height:1.7;margin-top:10px"><strong>তাহাজ্জুদ (সহীহ বুখারী ১১৪৫):</strong> রাতের শেষ তৃতীয়াংশ দোয়া কবুলের সর্বোত্তম সময়।</p>';
+      } else {
+        mt.textContent = 'আজকের সালাত ও আমল সারাংশ';
+        const doneP = Object.values(state.prayersDone).filter(Boolean).length;
+        body.innerHTML = '<p style="font-size:15px">আজ আদায়কৃত ফরজ সালাত: <strong>'+toBn(doneP)+'/৫</strong></p><p style="font-size:14px;color:var(--muted);margin-top:8px">নিয়মিত আমলের মাধ্যমে আল্লাহর নৈকট্য অর্জন করুন।</p>';
+      }
+    }
+    function closeModal() { document.getElementById('modalBackdrop').classList.remove('open'); }
+
+    render();
+    setInterval(render, 1000);
+  </script>
+</body>
+</html>
